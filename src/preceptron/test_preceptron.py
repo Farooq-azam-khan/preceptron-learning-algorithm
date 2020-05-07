@@ -21,7 +21,7 @@ class TestPreceptronModelClass(unittest.TestCase):
     def test_train_method(self):
         inputs = [0,0]
         weights = [-1,-1,1]
-        target = [1,0]
+        target = 1
 
         p = Preceptron(2, weights)
         p.lr = 1

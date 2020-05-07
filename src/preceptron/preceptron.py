@@ -66,25 +66,24 @@ class Preceptron():
     def train(self, inputs, target):
         '''
             param input: data you want to use to train preceptron
-            param target: the known output for adjusting the weights ie the label
+            param target: float
+                the known output for adjusting the weights ie the label 
         '''
 
         # get a guess based on the input (+1 or -1)
-        guess_inputs = self.feed_forward(inputs)
-        target.append(1)
+        guess_input = self.feed_forward(inputs)
 
         # get the error = known answer - guess
-        print('target: ', target)
-        error = Vector.to_vector(target).scalar_add(-guess_inputs)
-        print('guess:', guess_inputs, 'error:', error.data)
+        error = target - guess_input
         # adjust the weights here (the bias is inclded as one of the weights)
+        new_weights = self.weights.data[:]
         for indx, weight in enumerate(self.weights.data):
             # change the weights based on the previous weight, the LR,
-            # the error and its corresponding input
-            delta_weight = error.data[indx] * inputs[indx] * self.lr
-            self.weights.data[indx] = weight + delta_weight
+            delta_weight = error * inputs[indx] * self.lr
+            new_weights = weight + delta_weight
 
-        print(self.weights.data)
+        self.weights = new_weights
+        return new_weights
 
     '''
         runs train function over and over agian
