@@ -4,6 +4,7 @@
 - To learn about PLA look at the following files: `preceptron.py`, `linear_function.py`, `boolean_function.py`, and `planar_equation.py`.
   - In the `preceptron.py` file, the `Perceptron()` class contains the perceptron learning algorithm. This is an extremely useful algorithm to understand because neural networks and deep neural networks build on this simple algorithm to generalize more sophisticated functions.
 - For more detail as to how the algorithm works and how it was implemented read the corresponding lesson guide (not yet posted)
+- To check out real world applications of the **PLA** reference the `src/examples` directory
 
 ## Testing the Code
 
