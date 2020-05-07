@@ -16,12 +16,10 @@
 ## Todo
 
 - [x] figure out train method
-- [ ] write test for train method
-- [ ] proofread documens
+- [ ] proofread document
 
 ### Vector
 
-- [ ] write more tests
 - [ ] write documentation for each method [numpy documentation](https://numpydoc.readthedocs.io/en/latest/format.html), another documentation guide is [here](https://realpython.com/documenting-python-code/).
 
 ## Resources / References
