@@ -5,7 +5,7 @@ class Vector():
     """Class docstrings go here."""
 
     def __init__(self, dim=2):
-        """Class method docstrings go here."""
+        """vector class initalization"""
 
         """
         Parameters
@@ -20,23 +20,14 @@ class Vector():
     @staticmethod
     def initalize(dim=2):
         return [0 for _ in range(dim)]
-    # def initalize(self):
-        # [self.data.append(0) for _ in range(self.dim)]
-        # for _ in range(self.dim):
-        #     self.data.append(0)
 
-    def randomize(self):
-        for indx, _ in enumerate(self.data):
-            self.data[indx] = random.uniform(-1, 1)
+    @staticmethod
+    def randomize(vec):
+        return [random.uniform(-1, 1) for _ in range(vec.dim)]
 
     @staticmethod
     def scalar_mul(vec, num):
         return list(map(lambda x: x*num, vec.data))
-        # ret = Vector(0)
-        # for val in vec.data:
-        #     ret.append(val * num)
-        # ret.dim = len(vec.data)
-        # return ret
 
     def append(self, val):
         self.data.append(val)
@@ -46,24 +37,25 @@ class Vector():
 
     @staticmethod
     def to_vector(arr):
-        ret = Vector(0)
-        for val in arr:
-            ret.append(val)
-        ret.set_dim(len(arr))
-        return ret
-
-        return ret
+        '''Given an array covert it to a vector object'''
+        v = Vector(len(arr))
+        v.data = arr
+        return v
 
     def __mul__(self, other):
-        if (self.dim == other.dim):
-            ret = Vector(0)
-            for val_self, val_other in zip(self.data, other.data):
-                ret.append(val_self * val_other)
-            ret.dim = self.dim
-            return ret
+        ''' multiply two vectors elementwise '''
+
+        if (self.dim != other.dim):
+            raise Exception('Vectors must have the same dimensions')
         else:
-            print("must be same dim")
-            return None
+            result_v = Vector(self.dim)
+            result_v.data = [v1*v2 for v1, v2 in zip(self.data, other.data)]
+            return result_v
+            # ret = Vector(0)
+            # for val_self, val_other in zip(self.data, other.data):
+            #     ret.append(val_self * val_other)
+            # ret.dim = self.dim
+            # return ret
 
     @staticmethod
     def dot(vec1, vec2):
