@@ -31,21 +31,29 @@ class Preceptron():
 
     '''
 
-    def __init__(self, num_weights):
-        # weights: the number of weights = number of inputs
+    def __init__(self, num_weights, seed=None):
+        ''' 
+
+        '''
+
         self.num_weights = num_weights
-        # preceptron keeps track of its own weights
-        self.weights = []
-        for weight_index in range(self.num_weights):
-            # initalize the weights to be random number between -1 and 1
-            self.weights.append(random.uniform(-1, 1))
-
-        # add a random weight for the bias
-        self.weights.append(random.uniform(-1, 1))
-        self.num_weights += 1  # this is becuase we added the bias
-
+        
         # learning rate
         self.lr = 0.1
+
+
+        self.weights = []
+
+        
+        # for weight_index in range(self.num_weights):
+            # initalize the weights to be random number between -1 and 1
+            # self.weights.append(random.uniform(-1, 1))
+
+        # add a random weight for the bias
+        # self.weights.append(random.uniform(-1, 1))
+        # self.num_weights += 1  # this is becuase we added the bias
+        self.weights = Vector.randomize(Vector(num_weights + 1)) # +1 for bias
+
 
     '''
         param: inputs array
@@ -57,18 +65,23 @@ class Preceptron():
         # add the bias as part of the input
         bias = 1
         inputs.append(bias)
+        input_vec = Vector.to_vector(inputs)
+        dp = Vector.dot(input_vec, self.weights)
+        print(f'dot product: {dp}')
+        return sign(dp)
 
-        sum = 0
-        # loop through the weights
-        for i, weight in enumerate(self.weights):
-            # multiply the weights by the inputs at that index
-            result = weight * inputs[i]
-            # add it to total sum
-            sum = sum + result
-        # pass the sum through the activation function
-        output = sign(sum)
+
+        # sum = 0
+        # # loop through the weights
+        # for i, weight in enumerate(self.weights):
+        #     # multiply the weights by the inputs at that index
+        #     result = weight * inputs[i]
+        #     # add it to total sum
+        #     sum = sum + result
+        # # pass the sum through the activation function
+        # output = sign(sum)
         # return the output
-        return output
+        # return output
 
     '''
     param input: data you want to use to train preceptron
