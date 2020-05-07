@@ -3,15 +3,6 @@ from preceptron import activation_functions
 
 import vector
 
-# activation function
-
-
-def sign(num):
-    if (num >= 0):
-        return 1
-    else:
-        return -1
-
 
 '''
     class: Preceptron

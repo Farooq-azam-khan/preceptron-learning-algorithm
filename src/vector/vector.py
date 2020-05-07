@@ -2,10 +2,31 @@ import random
 
 
 class Vector():
-    """Class docstrings go here."""
+    """Programatic representation of vectors from linear algebra
+
+
+    Attributes
+    ----------
+    dim : int
+        length of the vector
+    data : array
+        vector corrdiantes
+
+    Methods
+    -------
+    initalize(dim=2)
+        this method's description
+    randomize(vec)
+        this method's description
+    scalar_mul(sound=None)
+        this method's description
+    to_vector(sound=None)
+        this method's description
+
+    """
 
     def __init__(self, dim=2):
-        """Class method docstrings go here."""
+        """vector class initalization"""
 
         """
         Parameters
@@ -20,23 +41,16 @@ class Vector():
     @staticmethod
     def initalize(dim=2):
         return [0 for _ in range(dim)]
-    # def initalize(self):
-        # [self.data.append(0) for _ in range(self.dim)]
-        # for _ in range(self.dim):
-        #     self.data.append(0)
 
-    def randomize(self):
-        for indx, _ in enumerate(self.data):
-            self.data[indx] = random.uniform(-1, 1)
+    @staticmethod
+    def randomize(vec):
+        v = Vector(vec.dim)
+        v.data = [random.uniform(-1, 1) for _ in range(vec.dim)]
+        return v
 
     @staticmethod
     def scalar_mul(vec, num):
         return list(map(lambda x: x*num, vec.data))
-        # ret = Vector(0)
-        # for val in vec.data:
-        #     ret.append(val * num)
-        # ret.dim = len(vec.data)
-        # return ret
 
     def append(self, val):
         self.data.append(val)
@@ -46,37 +60,31 @@ class Vector():
 
     @staticmethod
     def to_vector(arr):
-        ret = Vector(0)
-        for val in arr:
-            ret.append(val)
-        ret.set_dim(len(arr))
-        return ret
-
-        return ret
+        '''Given an array covert it to a vector object'''
+        v = Vector(len(arr))
+        v.data = arr
+        return v
 
     def __mul__(self, other):
-        if (self.dim == other.dim):
-            ret = Vector(0)
-            for val_self, val_other in zip(self.data, other.data):
-                ret.append(val_self * val_other)
-            ret.dim = self.dim
-            return ret
+        ''' multiply two vectors elementwise '''
+
+        if (self.dim != other.dim):
+            raise Exception('Vectors must have the same dimensions')
         else:
-            print("must be same dim")
-            return None
+            result_v = Vector(self.dim)
+            result_v.data = [v1*v2 for v1, v2 in zip(self.data, other.data)]
+            return result_v
 
     @staticmethod
     def dot(vec1, vec2):
-        if vec1.dim == vec2.dim:
-            sum = 0
-            for val1, val2 in zip(vec1.data, vec2.data):
-                sum += (val1 * val2)
-            return sum
+        if vec1.dim != vec2.dim:
+            raise Exception('Vectors must have the same dimensions')
         else:
-            print("need to be same dimension", vec1.dim, vec2.dim)
-            return None
+            result = vec1*vec2
+            return sum(result.data)
 
     def to_array(self):
+        ''' Returns the vector's elements '''
         return self.data
 
     def map(self, func):
@@ -125,15 +133,15 @@ class Vector():
         return ret + "]"
 
 
-def main():
-    vec1 = Vector(3)
-    vec2 = Vector(3)
-    vec1.randomize()
-    vec2.randomize()
-    print(vec1)
-    print(vec2)
-    print(Vector.dot(vec1, vec2))
+# def main():
+#     vec1 = Vector(3)
+#     vec2 = Vector(3)
+#     vec1.randomize()
+#     vec2.randomize()
+#     print(vec1)
+#     print(vec2)
+#     print(Vector.dot(vec1, vec2))
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
