@@ -1,7 +1,15 @@
+from activation_functions import sign
 import random  # used to generate random weights
-from preceptron.activation_functions import sign
 
-import vector
+# import vector object
+import sys
+sys.path.append('../vector/')
+from vector import Vector
+
+
+
+if __name__ == '__main__':
+    print('hello preceptron')
 
 
 class Preceptron():
