@@ -82,15 +82,9 @@ class Vector():
         else:
             result = vec1*vec2
             return sum(result.data)
-            # sum = 0
-            # for val1, val2 in zip(vec1.data, vec2.data):
-            #     sum += (val1 * val2)
-            # return sum
-        # else:
-        #     print("need to be same dimension", vec1.dim, vec2.dim)
-        #     return None
 
     def to_array(self):
+        ''' Returns the vector's elements '''
         return self.data
 
     def map(self, func):
@@ -139,15 +133,15 @@ class Vector():
         return ret + "]"
 
 
-def main():
-    vec1 = Vector(3)
-    vec2 = Vector(3)
-    vec1.randomize()
-    vec2.randomize()
-    print(vec1)
-    print(vec2)
-    print(Vector.dot(vec1, vec2))
+# def main():
+#     vec1 = Vector(3)
+#     vec2 = Vector(3)
+#     vec1.randomize()
+#     vec2.randomize()
+#     print(vec1)
+#     print(vec2)
+#     print(Vector.dot(vec1, vec2))
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
