@@ -2,7 +2,28 @@ import random
 
 
 class Vector():
-    """Class docstrings go here."""
+    """Programatic representation of vectors from linear algebra
+
+
+    Attributes
+    ----------
+    dim : int
+        length of the vector
+    data : array
+        vector corrdiantes
+
+    Methods
+    -------
+    initalize(dim=2)
+        this method's description
+    randomize(vec)
+        this method's description
+    scalar_mul(sound=None)
+        this method's description
+    to_vector(sound=None)
+        this method's description
+
+    """
 
     def __init__(self, dim=2):
         """vector class initalization"""
@@ -23,7 +44,9 @@ class Vector():
 
     @staticmethod
     def randomize(vec):
-        return [random.uniform(-1, 1) for _ in range(vec.dim)]
+        v = Vector(vec.dim)
+        v.data = [random.uniform(-1, 1) for _ in range(vec.dim)]
+        return v
 
     @staticmethod
     def scalar_mul(vec, num):
@@ -51,22 +74,21 @@ class Vector():
             result_v = Vector(self.dim)
             result_v.data = [v1*v2 for v1, v2 in zip(self.data, other.data)]
             return result_v
-            # ret = Vector(0)
-            # for val_self, val_other in zip(self.data, other.data):
-            #     ret.append(val_self * val_other)
-            # ret.dim = self.dim
-            # return ret
 
     @staticmethod
     def dot(vec1, vec2):
-        if vec1.dim == vec2.dim:
-            sum = 0
-            for val1, val2 in zip(vec1.data, vec2.data):
-                sum += (val1 * val2)
-            return sum
+        if vec1.dim != vec2.dim:
+            raise Exception('Vectors must have the same dimensions')
         else:
-            print("need to be same dimension", vec1.dim, vec2.dim)
-            return None
+            result = vec1*vec2
+            return sum(result.data)
+            # sum = 0
+            # for val1, val2 in zip(vec1.data, vec2.data):
+            #     sum += (val1 * val2)
+            # return sum
+        # else:
+        #     print("need to be same dimension", vec1.dim, vec2.dim)
+        #     return None
 
     def to_array(self):
         return self.data

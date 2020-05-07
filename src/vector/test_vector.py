@@ -47,6 +47,24 @@ class TestVectorClass(unittest.TestCase):
         with self.assertRaises(Exception):
             v1*v2
 
+    def test_valid_dot_product_function(self):
+        v1 = Vector()
+        v2 = Vector()
+        result = Vector.dot(v1, v2)
+        self.assertEqual(result, 0)
+
+        v1 = Vector.to_vector([1, 2, 3])
+        v2 = Vector.to_vector([4, 5, 6])
+        result = Vector.dot(v1, v2)
+        self.assertEqual(result, 4*1+5*2+3*6)
+
+    def test_invalid_dot_product_function(self):
+        v1 = Vector.to_vector([1, 2, 3])
+        v2 = Vector()
+
+        with self.assertRaises(Exception):
+            Vector.dot(v1, v2)
+
 
 if __name__ == '__main__':
     unittest.main()
