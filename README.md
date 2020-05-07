@@ -1,4 +1,5 @@
 # Preceptron Learning Algorithm
+
 - To learn about PLA look at the following files: `preceptron.py`, `linear_function.py`, `boolean_function.py`, and `planar_equation.py`.
   - In the `preceptron.py` file, the `Perceptron()` class contains the perceptron learning algorithm. This is an extremely useful algorithm to understand because neural networks and deep neural networks build on this simple algorithm.
     - The algorithm itself has two main parts to it, predicting results based on input and training based on desired outcome and actual outcome.
@@ -8,5 +9,8 @@
     - There are four outcomes when predicting a set of inputs. It could be false positive, false negative, true positive, and true negative. These can be seen in the legend of the graph.
   - The `boolean_function.py` file contains examples of PLA successes as well as its failure, i.e. the XOR problem. Look at `neural_network.py` for improvement to PLA and a solution to the `xor` problem.
 
+## Testing the Code
 
-## Python's Unittesting Library
+- Python's builtin unittest module was used to make tests
+- to run the specfic test file run: `python -m unittest [filename]`
+- all test files start wil `test_`.
