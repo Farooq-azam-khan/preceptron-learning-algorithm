@@ -27,3 +27,4 @@
 ## Resources / References
 
 - [d3js in ipnb file](https://www.stefaanlippens.net/jupyter-custom-d3-visualization.html)
+- [pla article](https://towardsdatascience.com/perceptron-learning-algorithm-d5db0deab975)
