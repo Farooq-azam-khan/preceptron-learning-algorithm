@@ -1,17 +1,28 @@
 import random  # used to generate random weights
-from preceptron import activation_functions
+from preceptron.activation_functions import sign
 
 import vector
 
 
-'''
-    class: Preceptron
-    usage: create a linearly separable line based on weights and biases
- '''
-
-
 class Preceptron():
-    # constructor
+    ''' Implementation of the preceptron learning algorithm
+
+    Attributes
+    ----------
+    num_weights : int
+        attribue of class
+    weights : array
+        weights of model
+    lr : flaot
+        learning rate
+
+    Methods
+    -------
+    __init__(dim=num_weights)
+        this method's description
+
+    '''
+
     def __init__(self, num_weights):
         # weights: the number of weights = number of inputs
         self.num_weights = num_weights
