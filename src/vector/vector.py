@@ -43,7 +43,7 @@ class Vector():
         return [0 for _ in range(dim)]
 
     @staticmethod
-    def randomize(vec):
+    def randomize(vec, seed=None):
         v = Vector(vec.dim)
         v.data = [random.uniform(-1, 1) for _ in range(vec.dim)]
         return v
