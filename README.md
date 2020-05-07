@@ -14,3 +14,11 @@
 - Python's builtin unittest module was used to make tests
 - to run the specfic test file run: `python -m unittest [filename]`
 - all test files start wil `test_`.
+- (here)[https://docs.python-guide.org/writing/tests/] are some testing resources
+
+## Todo
+
+### Vector
+
+- [ ] write more tests
+- [ ] write documentation for each method (numpy documentation)[https://numpydoc.readthedocs.io/en/latest/format.html], another documentation guide is (here)[https://realpython.com/documenting-python-code/].
