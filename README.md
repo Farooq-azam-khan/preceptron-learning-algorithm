@@ -18,7 +18,7 @@
 
 ## Todo
 
-- [ ] figure out train method
+- [x] figure out train method
 - [ ] write test for train method
 
 ### Vector
