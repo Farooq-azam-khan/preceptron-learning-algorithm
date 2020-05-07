@@ -1,7 +1,8 @@
-# Preceptron Learning Algorithm
+# Preceptron Learning Algorithm (PLA)
 
+- The **PLA** is designed to find linear relationships within a set of data. It is done by tuning the weights of each set of data to be able to find the equation for the line: y= mx + b, or more generally: <img src="https://render.githubusercontent.com/render/math?math=y = m_1\cdotx_1 + m_2\cdotx_2 + m_3\cdot x_3 + b">
 - To learn about PLA look at the following files: `preceptron.py`, `linear_function.py`, `boolean_function.py`, and `planar_equation.py`.
-  - In the `preceptron.py` file, the `Perceptron()` class contains the perceptron learning algorithm. This is an extremely useful algorithm to understand because neural networks and deep neural networks build on this simple algorithm.
+  - In the `preceptron.py` file, the `Perceptron()` class contains the perceptron learning algorithm. This is an extremely useful algorithm to understand because neural networks and deep neural networks build on this simple algorithm to generalize more sophisticated functions.
     - The algorithm itself has two main parts to it, predicting results based on input and training based on desired outcome and actual outcome.
     - The reason PLA is simple and not useful in modern day research is because it can only predict linearly separable data (i.e. it can only separate things with a line and can be proven with linear algebra).
   - The `linear_function.py` file contains a graphical understanding of how PLA does linear separation of 2d inputs.
