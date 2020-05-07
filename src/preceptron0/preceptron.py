@@ -1,4 +1,4 @@
-from activation_functions import sign
+
 import random  # used to generate random weights
 
 # import vector object
@@ -7,6 +7,11 @@ sys.path.append('../vector/')
 from vector import Vector
 
 
+def sign(x):
+    if x>=0:
+        return 1
+    else:
+        return -1
 
 if __name__ == '__main__':
     print('hello preceptron')
