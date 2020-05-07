@@ -100,8 +100,11 @@ class Vector():
         return ret
 
     def scalar_add(self, num):
-        for indx, val in enumerate(self.data):
-            self.data[indx] += num
+        v = Vector(self.dim)
+        v.data = list(map(lambda x: x+num, self.data))
+        return v 
+        # for indx, val in enumerate(self.data):
+        #     self.data[indx] += num
 
     def __add__(self, other):
         if self.dim == other.dim:

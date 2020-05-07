@@ -19,6 +19,14 @@ class TestVectorClass(unittest.TestCase):
         self.assertEqual(Vector.scalar_mul(v1, -1), [-1, -1])
         self.assertEqual(Vector.scalar_mul(v1, 2), [2, 2])
 
+    def test_vector_scalar_add(self):
+        arr = [0,0,1]
+        val = 1 
+        result = Vector.to_vector(arr).scalar_add(-val)
+        self.assertEqual(result.dim, 3)
+        self.assertEqual(result.data, [-1, -1, 0])
+
+
     def test_array_to_vector(self):
         arr = [1, 2, 3]
         v = Vector.to_vector(arr)
