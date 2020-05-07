@@ -38,7 +38,18 @@ class TestPreceptronModelClass(unittest.TestCase):
         self.assertEqual(result, 1)
 
         result = p.train(inputs, target)
-        self.assertEqual(result, [0,0,0])
+        self.assertEqual(result.data, [0,0,0])
+    
+    def test_train_method_2(self):
+        inputs = [0, 0]
+        weights = [1,1,1]
+        target = 0
+        p = Preceptron(2, weights)
+        p.lr = 1
+        result = p.feed_forward(inputs)
+        self.assertEqual(result, 1)
+        result = p.train(inputs, target)
+        self.assertEqual(result.data, [1,1,0])
 
 
 if __name__ == '__main__':

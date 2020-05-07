@@ -79,12 +79,12 @@ class Preceptron():
         # get the error = known answer - guess
         error = target - guess_input
         # adjust the weights here (the bias is inclded as one of the weights)
-        new_weights = self.weights.data[:]
-        for indx, weight in enumerate(self.weights.data):
+        new_weights = Vector.to_vector(self.weights.data[:])
+        for indx, weight in enumerate(new_weights.data):
             # change the weights based on the previous weight, the LR,
             delta_weight = error * input_vec.data[indx] * self.lr
-            new_weights[indx] = weight + delta_weight
-
+            new_weights.data[indx] = weight + delta_weight
+          
         self.weights = new_weights
         return new_weights
 
