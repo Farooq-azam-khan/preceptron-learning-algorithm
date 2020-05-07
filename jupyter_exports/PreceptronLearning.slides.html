@@ -13206,18 +13206,484 @@ a.anchor-link {
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The preceptron learning algorithm has 2 parts: predicting and traning. Here we will look at both parts.</p>
+<h2 id="Predicting-with-PLA">Predicting with PLA<a class="anchor-link" href="#Predicting-with-PLA">&#182;</a></h2><p>Lets say we have some data formatted like this: <code>[(x1,y1), (x2,y2), ... (xn,yn)]</code>. You are given a new point <code>x</code> and our job is to predict <code>y</code> and we are told that this data fits a linear model.</p>
+<p>We know the equation of a line is $y=mx+b$ and so we try to figure out a good slope ($m$) and a good y-intercept ($b$). The preceptron algorithm with take the input to the system <code>x</code> and give you an output <code>y</code>. Our job now is to figure out how the input is manipulated through the blackbox.</p>
+<p><strong>PLA</strong> will take the input <code>x</code> multiply it by a weight <code>w</code>. The weight is initalized to whatever we want to choose or we can ask python to give us a random number. Later we will try to figure out how to set this weight so that it is the best possible. 
+$$ x \cdot w = y$$
+We are missing the y-intercept in out model. In machine learning it is refered to as the bias and it can be represented as just anoter weight. Lets represent our input and weights as vectors.<br>
+$$
+x = (x_1, 1) \\ 
+w = (w_1, w_2)
+$$
+Here $w_1$ is the slope $m$ and $w_2$ is the bias $b$. If we computer the dot product of these two vectors, we will get the equation of our line as above: 
+$$
+   x \cdot w = x_1 \cdot w_1 + 1\cdot w_2 = y
+$$</p>
+<p>The reason we used vectors is so that we can generalized this algorithm. We can have multiple. An example can be seen below: 
+$$
+x = (x_1, x_2, x_3, 1) \quad w = (w_1, w_2, w_3, w_4) 
+$$
+$$
+y = x \cdot w \\ 
+  = x_1 \cdot w_1 + x_2  \cdot w_2 + x_3 \cdot w_3 + 1 \cdot w_4
+$$</p>
+<p>Note that we always have biases. This all seems abstract; however, this leads to very interesting applications. (TODO give an example). This is called the feed forward algorithm. When we are predicting we are feeding the input forward.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="General-Feedforward-Algorithm">General Feedforward Algorithm<a class="anchor-link" href="#General-Feedforward-Algorithm">&#182;</a></h2><p>The feed forward algorithm works with $n-$dimentional vectors. For the Preceptron it is just the dot product. 
+$$ \sum_{i=1}^{n} x_i \cdot w_i = y $$
+If you were to generalize this idea of a preceptron to multiple preceptrons this idea of a dot product will hold, but there will be multiple dot prodcuts. 
+What we have described above is a regression problem, but often times this algorithm is used to classify between two or more types of outputs. We will define a function <code>sign</code> which will return <code>-1</code> if the output of the dot product is below zero and <code>1</code> if the output is above zero.</p>
+<div class="highlight"><pre><span></span><span class="n">sign</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">val</span><span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="mi">1</span>
+</pre></div>
+<p>Our output <code>y</code> now is: <code>sign(dot(x, w))</code>. 
+An implementation of the feed forward algorithm is present in the <code>src/preceptron/preceptron.py</code> file.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">feed_forward</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+    <span class="c1"># add the bias as part of the input</span>
+    <span class="n">bias</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">dot_product</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">xi</span><span class="o">*</span><span class="n">wi</span> <span class="k">for</span> <span class="n">xi</span><span class="p">,</span><span class="n">wi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">inputs</span><span class="o">+</span><span class="p">[</span><span class="n">bias</span><span class="p">],</span> <span class="n">weights</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="n">sign</span><span class="p">(</span><span class="n">dot_product</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Training-the-Weights">Training the Weights<a class="anchor-link" href="#Training-the-Weights">&#182;</a></h2><p>We must train the weights so that our prediction is as acurate as it can be. We must do this by finding the error in our output, update the weights based on the error and repeat until we get a high accuracy.</p>
+<p>It is a _ step process:</p>
+<ol>
+<li>find the output with the current weights, lets call it the <code>guess</code>; </li>
+<li>you have access to the expected output (lets call it the <code>target</code>), figure out the <code>error = target - guess</code>; </li>
+<li>update all the weights based on the <code>error</code>: <code>weight[i] = weight[i] + error * x[i] * learning_rate</code></li>
+<li>repeat steps 1 to 3 until you get a high accuracy.</li>
+</ol>
+$$error = target - preditcion \\
+w_i = w_i + error \cdot x_i \cdot learning\_rate$$<p>The above fourmua introduces another concept. The <code>learning_rate</code> is a number from 0 to 1 and it is useful because it only updates a percentage of the weight. If the learning rate was not there is a good chace that the weights will bounce around the targets which would result in low accuracy. We want the weihts to update gradually.</p>
+<p>Below is an example of a trainig function that takes in a sample input and its corresponding target value and updates the weights accordingly.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+  <span class="c1"># get a guess based on the input (+1 or -1)</span>
+    <span class="n">guess_input</span> <span class="o">=</span> <span class="n">feed_forward</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">weigths</span><span class="p">)</span>
+
+    <span class="c1"># get the error = known answer - guess</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">target</span> <span class="o">-</span> <span class="n">guess_input</span>
+
+    <span class="c1"># adjust the weights here (the bias is inclded as one of the weights)</span>
+    <span class="n">new_weights</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">lr</span> <span class="o">=</span> <span class="mf">0.1</span>
+    <span class="n">bias</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">xi</span><span class="p">,</span> <span class="n">wi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">inputs</span><span class="o">+</span><span class="p">[</span><span class="n">bias</span><span class="p">],</span> <span class="n">weights</span><span class="p">):</span>
+        <span class="c1"># change the weights based on the previous weight, the LR,</span>
+        <span class="n">delta_weight</span> <span class="o">=</span> <span class="n">error</span> <span class="o">*</span> <span class="n">xi</span> <span class="o">*</span> <span class="n">lr</span>
+        <span class="n">new_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weight</span> <span class="o">+</span> <span class="n">delta_weight</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_weights</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Example:-The-OR-function">Example: The OR function<a class="anchor-link" href="#Example:-The-OR-function">&#182;</a></h2><ul>
+<li>The <code>OR</code> function is defined to have output <code>1</code> if at leat one input is true, otherwise <code>0</code>. 
+| x1 | x2 | y |
+|----|----|---|
+| 0  | 0  | 0 |
+| 0  | 1  | 1 |
+| 1  | 0  | 1 | 
+| 1  | 1  | 1 | </li>
+</ul>
+<p>Therefore out inputs $x = (x_1, x_2)$, our expected outputs are $y=(0,1,1,1)$. Lets trains out PLA on this data and see how it performs.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># import vector object</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;./src/vector/&#39;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;./src/preceptron/&#39;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">vector</span> <span class="kn">import</span> <span class="n">Vector</span>
+<span class="kn">from</span> <span class="nn">preceptron</span> <span class="kn">import</span> <span class="n">Preceptron</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]]</span>
+<span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">p_or</span> <span class="o">=</span> <span class="n">Preceptron</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># will generate random weights</span>
+<span class="n">p_or</span><span class="o">.</span><span class="n">weights</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[2]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[-0.49, 0.01, 0.35]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Right now we have random weights, so lets see what the feed forward algorithm predicts if we give it each input data:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">xi</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">xi</span><span class="si">}</span><span class="s1"> =&gt; </span><span class="si">{</span><span class="n">p_or</span><span class="o">.</span><span class="n">feed_forward</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[0, 0] =&gt; 1
+[0, 1] =&gt; 1
+[1, 0] =&gt; -1
+[1, 1] =&gt; -1
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We are geeting negative number because we design our <code>sign(x)</code> function to be as such. We can alter it so that if when we get <code>1</code> our output of <code>y</code> is <code>1</code>, and when we get <code>-1</code> from our <code>feed_forward(x)</code> algorithm we map the output to be <code>0</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">display_output</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">xi</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span> 
+        <span class="n">ff</span> <span class="o">=</span> <span class="n">p_or</span><span class="o">.</span><span class="n">feed_forward</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ff</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">ff</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">xi</span><span class="si">}</span><span class="s1"> =&gt; </span><span class="si">{</span><span class="n">ff</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">display_output</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[0, 0] =&gt; 1
+[0, 1] =&gt; 1
+[1, 0] =&gt; 0
+[1, 1] =&gt; 0
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now notice that the mode is not giving accurate results; thus, we have to train it. Let us train it on all the inputs.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">xi</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span> 
+    <span class="n">p_or</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+<span class="n">display_output</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[0, 0] =&gt; 1
+[0, 1] =&gt; 1
+[1, 0] =&gt; 1
+[1, 1] =&gt; 1
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Viola! After training we get the exact function. This was an easy eaxmple, in practice this will almost never happed because there will be alot of noise in the data and you might need to train the model for hundreds and thousands of iterations.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-XOR-Function-Example">The XOR Function Example<a class="anchor-link" href="#The-XOR-Function-Example">&#182;</a></h2><p>Let us try a harder function this time. The <code>XOR</code> function is defined to be <code>1</code> if the inputs are an odd number of <code>1</code>s.</p>
+<table>
+<thead><tr>
+<th>x1</th>
+<th>x2</th>
+<th>y</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># the input data is the same, but the targets are not</span>
+<span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># some helper functions</span>
+<span class="k">def</span> <span class="nf">train_model</span><span class="p">(</span><span class="n">targets</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Preceptron</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">xi</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span>
+
+<span class="k">def</span> <span class="nf">display_output</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">xi</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span> 
+        <span class="n">ff</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">feed_forward</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ff</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">ff</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">xi</span><span class="si">}</span><span class="s1"> =&gt; </span><span class="si">{</span><span class="n">ff</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">p_xor</span> <span class="o">=</span> <span class="n">train_model</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span>
+<span class="n">display_output</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">p_xor</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[0, 0] =&gt; 0
+[0, 1] =&gt; 0
+[1, 0] =&gt; 0
+[1, 1] =&gt; 0
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As we can see, this model is function is hard to model with the preceptron. What if we train on all the inputs more than once? Lets try it, maybe in our first try we got unlucky.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">train_model</span><span class="p">(</span><span class="n">targets</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Preceptron</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">xi</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span>
+<span class="n">p_xor</span> <span class="o">=</span> <span class="n">train_model</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span>
+<span class="n">display_output</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">p_xor</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[0, 0] =&gt; 1
+[0, 1] =&gt; 1
+[1, 0] =&gt; 1
+[1, 1] =&gt; 1
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It seems to not work. This is because the xor function is not linearly seperable. Lets try to figure out why. Graph the xor function and try to fit a line so that all the <code>1</code>s are on one side and all the <code>0</code>s are on the other side of the line.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<table>
+<thead><tr>
+<th>inputs</th>
+<th>0</th>
+<th>1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>The graph in show in the table above. Try to seperate this data by using only a line. It is impossible. Although the <strong>PLA</strong> cannot solve this problem, the generalized <strong>PLA</strong> (a neural network) can.</p>
+
+</div>
+</div>
 </div></section></section>
 </div>
 </div>

@@ -25,3 +25,6 @@
 
 - [ ] write more tests
 - [ ] write documentation for each method [numpy documentation](https://numpydoc.readthedocs.io/en/latest/format.html), another documentation guide is [here](https://realpython.com/documenting-python-code/).
+
+## Resources / References
+- [d3js in ipnb file](https://www.stefaanlippens.net/jupyter-custom-d3-visualization.html)
