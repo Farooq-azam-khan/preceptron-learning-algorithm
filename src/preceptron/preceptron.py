@@ -37,6 +37,10 @@ class Preceptron():
         '''
 
         self.num_weights = num_weights
+
+
+        if weights != None and num_weights == len(weights):
+            raise Exception('please add the weight for the bias')
         
         # learning rate
         self.weights = [] 
@@ -58,8 +62,7 @@ class Preceptron():
             raise Exception('The number of inputs must match the number of weights')
         # add the bias as part of the input
         bias = 1
-        inputs.append(bias)
-        input_vec = Vector.to_vector(inputs)
+        input_vec = Vector.to_vector(inputs[:] + [bias])
         return sign(Vector.dot(input_vec, self.weights))
 
    
@@ -69,9 +72,9 @@ class Preceptron():
             param target: float
                 the known output for adjusting the weights ie the label 
         '''
-
         # get a guess based on the input (+1 or -1)
         guess_input = self.feed_forward(inputs)
+        input_vec = Vector.to_vector(inputs[:]+[1])
 
         # get the error = known answer - guess
         error = target - guess_input
@@ -79,8 +82,8 @@ class Preceptron():
         new_weights = self.weights.data[:]
         for indx, weight in enumerate(self.weights.data):
             # change the weights based on the previous weight, the LR,
-            delta_weight = error * inputs[indx] * self.lr
-            new_weights = weight + delta_weight
+            delta_weight = error * input_vec.data[indx] * self.lr
+            new_weights[indx] = weight + delta_weight
 
         self.weights = new_weights
         return new_weights
@@ -96,10 +99,10 @@ class Preceptron():
             for _ in range(BATCHSIZE):
                 # pick a random data point
                 random_index = random.randrange(len(inputs_train_array))
-                input = inputs_train_array[random_index]
+                given_inputs = inputs_train_array[random_index]
                 target = targets_train_array[random_index]
                 # train on that datapoint
-                self.train(input, target)
+                self.train(given_inputs, target)
             # get the accuracy of the testing data
             acc = self.actual_accuracy(inputs_test_array, targets_test_array)
             print("Epoch: {} out of {} accuarcy: {}".format(epoch+1, EPOCHS, acc))
