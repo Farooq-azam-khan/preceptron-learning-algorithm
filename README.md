@@ -13,8 +13,8 @@
 - Python's builtin unittest module was used to make tests
 - to run the specfic test file run: `python -m unittest [filename]`
 - all test files start wil `test_`.
-- (here)[https://docs.python-guide.org/writing/tests/] are some testing resources
-- importing code from (sibling modlues)[https://wiki.python.org/moin/Asking%20for%20Help/How%20can%20I%20import%20a%20module%20from%20a%20sibling%20directory%3F]
+- [here](https://docs.python-guide.org/writing/tests/) are some testing resources
+- importing code from [sibling modlues](https://wiki.python.org/moin/Asking%20for%20Help/How%20can%20I%20import%20a%20module%20from%20a%20sibling%20directory%3F)
 
 ## Todo
 
@@ -24,4 +24,4 @@
 ### Vector
 
 - [ ] write more tests
-- [ ] write documentation for each method (numpy documentation)[https://numpydoc.readthedocs.io/en/latest/format.html], another documentation guide is (here)[https://realpython.com/documenting-python-code/].
+- [ ] write documentation for each method [numpy documentation](https://numpydoc.readthedocs.io/en/latest/format.html), another documentation guide is [here](https://realpython.com/documenting-python-code/).
